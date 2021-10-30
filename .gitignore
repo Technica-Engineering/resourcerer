@@ -1,0 +1,9 @@
+dist
+*.egg-*
+__pycache__
+*.pyc
+build
+htmlcov
+.nox
+.pytest*
+.coverage

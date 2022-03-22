@@ -7,3 +7,5 @@ htmlcov
 .nox
 .pytest*
 .coverage
+env.ps1
+env.env

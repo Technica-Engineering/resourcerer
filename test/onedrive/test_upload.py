@@ -1,4 +1,4 @@
-from resourcerer import send_resources
+from resourcerer.main import send_resources
 from resourcerer.onedrive.get import _obtain_download_link
 from resourcerer.utils import CLIENT_ID, TENANT_ID, SITE_ID, auth_token
 from resourcerer.parse_yaml import get_yaml_obj

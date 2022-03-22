@@ -1,20 +1,22 @@
-from .onedrive.get import download_from_onedrive
-from .parse_yaml import get_yaml_obj
+from ..onedrive.send import send_to_onedrive
+from ..parse_yaml import get_yaml_obj
+import glob
 import os
 import argparse
 
 
 def close_resources(resources):
     def run(callback, section, source, target):
-        for filename in resources[section]:
-            callback(
-                os.path.join(resources[source], filename).replace("\\", "/"),
-                resources[target]
-            )
+        for pattern in resources[section]:
+            for filename in glob.glob(pattern):
+                callback(
+                    os.path.join(resources[source], filename).replace("\\", "/"),
+                    os.path.join(resources[target], filename).replace("\\", "/")
+                )
     return run
 
 
-def main(default_file="resources.yaml"):
+def main(default_file=".resources.yaml"):
     parser = argparse.ArgumentParser(description='Test automation wrapper')
     parser.add_argument('-f', '--file', type=str, help='Path to .kalash.yaml')
     args = parser.parse_args()
@@ -27,8 +29,8 @@ def main(default_file="resources.yaml"):
     resources = get_yaml_obj(file)
 
     close_resources(resources)(
-        download_from_onedrive,
-        'test_resources',
+        send_to_onedrive,
+        'uploadables',
         'source_folder',
         'target_folder'
     )

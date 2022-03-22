@@ -1,4 +1,4 @@
-from resourcerer import get_resources
+from resourcerer.main import get_resources
 from resourcerer.parse_yaml import get_yaml_obj
 import unittest
 import os

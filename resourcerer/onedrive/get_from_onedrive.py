@@ -1,6 +1,6 @@
 import requests
 import os
-from .shared import (try_from_response, SITE_ID, CLIENT_ID, TENANT_ID, auth_token,
+from ..shared import (try_from_response, SITE_ID, CLIENT_ID, TENANT_ID, auth_token,
                      response_content_to_dict, download_file)
 
 

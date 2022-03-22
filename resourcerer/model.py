@@ -4,6 +4,7 @@ from typing import Any, Dict, List
 from pathlib import Path
 from enum import Enum, auto
 from collections import defaultdict
+from resourcerer.parse_yaml import get_yaml_obj
 
 
 class UnknownCachingStrategy(Exception):
@@ -55,6 +56,7 @@ class ResourcesYamlObj:
 
     @classmethod
     def from_dict(cls, dct: Dict[str, Any]) -> ResourcesYamlObj:
+        """Loads the configuration model from a dictionary"""
         ddct = defaultdict(lambda: None)
         # turn all keys to lowercase
         lowercase_key_dct = {k.lower(): v for k, v in dct.items()}
@@ -67,3 +69,8 @@ class ResourcesYamlObj:
             Path(ddct["target_dir"] or "."),
             CachingStrategy(ddct["caching_strategy"] or CachingStrategy.SIMPLE.value)
         )
+
+    @classmethod
+    def from_yaml(cls, yaml_file_path: Path) -> ResourcesYamlObj:
+        """Loads the configuration model from a YAML file"""
+        return cls.from_dict(get_yaml_obj(yaml_file_path))

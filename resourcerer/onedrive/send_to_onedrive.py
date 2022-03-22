@@ -1,5 +1,5 @@
 import requests
-from ..shared import (try_from_response, SITE_ID, CLIENT_ID,
+from ..utils import (try_from_response, SITE_ID, CLIENT_ID,
                      TENANT_ID, auth_token, response_content_to_dict, upload_file)
 
 # "@odata.type" => "microsoft.graph.driveItemUploadableProperties",

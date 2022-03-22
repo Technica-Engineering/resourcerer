@@ -6,7 +6,7 @@ import warnings
 SECRET = os.environ.get("MSGRAPH_API_KEY")
 CLIENT_ID = os.environ.get("MSGRAPH_CLIENT_ID")
 TENANT_ID = os.environ.get("MSGRAPH_TENANT_ID")
-SITE_ID = os.environ.get("MSGRAPH_SITE_ID")
+SITE_ID = os.environ.get("MSGRAPH_SITE_ID") 
 
 
 if not CLIENT_ID:

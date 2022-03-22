@@ -1,10 +1,15 @@
+from typing import Optional
+from pathlib import Path
 import requests
 import os
+
+from resourcerer.onedrive.model import ApiToken, SiteId
 from ..utils import (try_from_response, SITE_ID, CLIENT_ID, TENANT_ID, auth_token,
                      response_content_to_dict, download_file)
+from resourcerer.caching import is_cached
 
 
-def _obtain_download_link(token, site_id, item_path):
+def _obtain_download_link(token: ApiToken, site_id: SiteId, item_path: Path):
     """Gets a direct download link to an item in OneDrive.
 
     Args:
@@ -26,7 +31,7 @@ def _obtain_download_link(token, site_id, item_path):
     }
 
     # download_link = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drive/items/{item_id}/content"  # noqa: E501
-    meta_link = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drive/root:/{item_path}"
+    meta_link = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drive/root:/{item_path.as_posix()}"  # noqa: E501
     # meta_link = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drive/root"
     # download_link = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drive/root:/{item_path}/content"  # noqa: E501
 
@@ -44,7 +49,12 @@ def _obtain_download_link(token, site_id, item_path):
     return name, download_link
 
 
-def _download_from_onedrive(token, site_id, item_path, target_path=None):
+def _download_from_onedrive(
+    token: ApiToken,
+    site_id: SiteId,
+    item_path: Path,
+    target_path: Optional[Path] = None
+):
     """Downloads a file from OneDrive
 
     Args:
@@ -75,29 +85,11 @@ def _download_from_onedrive(token, site_id, item_path, target_path=None):
     return outpath
 
 
-def is_cached(target_file_name, target_file_directory):
-    """Checks whether a file exists in a given directory
-    (whether it's cached).
-
-    Args:
-        `target_file_name` (:obj:`str`): filename to search for
-        `target_file_directory` (:obj:`str`): path to the directory
-            where to search for a given file
-
-    Returns:
-        :obj:`bool`, `True` if the file has been found,
-        `False` otherwise
-    """
-    if not os.path.exists(target_file_directory):
-        return False
-    for f in os.listdir(target_file_directory):
-        if f == target_file_name:
-            return True
-    else:
-        return False
-
-
-def download_from_onedrive(item_path, target_path=None, check_cache_first=True):
+def download_from_onedrive(
+    item_path: Path,
+    target_path: Optional[Path] = None,
+    check_cache_first: bool = True
+):
     """Downloads an item from OneDrive to a specified path
     or current working directory with pre-set connection
     to OneDrive (where Client ID, Tenant ID and Site ID)
@@ -118,6 +110,9 @@ def download_from_onedrive(item_path, target_path=None, check_cache_first=True):
     Returns:
         Output file path (:obj:`str`).
     """
+
+    if target_path is None:
+        target_path = Path.cwd()
 
     if check_cache_first:
         name = os.path.split(item_path)[-1]

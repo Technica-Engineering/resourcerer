@@ -1,0 +1,8 @@
+test_resources:
+  - testDownload.txt
+
+uploadables:
+  - '*.txt'
+
+source_folder: 'res/resourcerer_unit_tests'
+target_folder: '.'

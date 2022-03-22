@@ -1,4 +1,4 @@
-from .onedrive.send_to_onedrive import send_to_onedrive
+from .onedrive.send import send_to_onedrive
 from .parse_yaml import get_yaml_obj
 import glob
 import os

@@ -1,4 +1,4 @@
-from .onedrive.get_from_onedrive import download_from_onedrive
+from .onedrive.get import download_from_onedrive
 from .parse_yaml import get_yaml_obj
 import os
 import argparse

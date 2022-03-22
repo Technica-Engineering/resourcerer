@@ -1,5 +1,5 @@
 import unittest
-from resourcerer.model import UnknownCachingStrategy, CachingStrategy, ResourcesYamlObj
+from resourcerer.model import ResourcesYamlObj
 from pathlib import Path
 
 
@@ -15,18 +15,10 @@ class TestModel(unittest.TestCase):
         )
         cls.yaml_dct_empty = dict()
 
-    def test_caching_strategy_invalid_lookup(self):
-        invalid_strategy = lambda: CachingStrategy.from_str("aasdfasdfa")
-        self.assertRaises(UnknownCachingStrategy, invalid_strategy)
-
-    def test_caching_strategy_valid(self):
-        simple_caching_strat = CachingStrategy.from_str("SIMPLE")
-        self.assertEqual(simple_caching_strat, CachingStrategy.SIMPLE)
-
     def test_yaml_obj_parsing_default(self):
         actual = ResourcesYamlObj.from_dict(self.yaml_dct_empty)
         expected = ResourcesYamlObj(
-            [], [], Path(""), Path(""), CachingStrategy.SIMPLE
+            [], [], Path(""), Path(""), "simple"
         )
         self.assertEqual(actual, expected)
 

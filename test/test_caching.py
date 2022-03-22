@@ -1,6 +1,7 @@
 from pathlib import Path
 import unittest
 from resourcerer.caching import is_cached
+from resourcerer.exceptions import UnknownCachingStrategy
 
 
 class TestCaching(unittest.TestCase):
@@ -12,10 +13,14 @@ class TestCaching(unittest.TestCase):
         cls.filename_not_existing = "not_cached.txt"
 
     def test_is_cached(self):
-        self.assertTrue(is_cached(self.filename_existing, self.path_dir))
+        self.assertTrue(is_cached(self.filename_existing, self.path_dir, "simple"))
 
     def test_is_not_cached(self):
-        self.assertFalse(is_cached(self.filename_not_existing, self.path_dir))
+        self.assertFalse(is_cached(self.filename_not_existing, self.path_dir, "simple"))
+
+    def test_caching_strategy_invalid_lookup(self):
+        invalid_strategy = lambda: is_cached(self.filename_not_existing, self.path_dir, "asdfassdf")
+        self.assertRaises(UnknownCachingStrategy, invalid_strategy)
 
 
 if __name__ == "__main__":

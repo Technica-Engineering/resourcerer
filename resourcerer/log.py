@@ -15,5 +15,8 @@ STDERR_HANDLER.setLevel(logging.ERROR)
 
 
 def add_handlers(logger: logging.Logger):
+    """Adds sane-config STDOUT and STDERR handlers
+    to the logger that the function is called with.
+    """
     logger.addHandler(STDOUT_HANDLER)
     logger.addHandler(STDERR_HANDLER)

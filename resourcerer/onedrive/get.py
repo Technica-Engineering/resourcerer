@@ -4,8 +4,10 @@ import requests
 import os
 
 from resourcerer.onedrive.model import ApiToken, SiteId
-from ..utils import (try_from_response, SITE_ID, CLIENT_ID, TENANT_ID, auth_token,
+from ..utils import (try_from_response,
                      response_content_to_dict, download_file)
+from resourcerer.onedrive.env import SITE_ID, CLIENT_ID, TENANT_ID, SECRET
+from resourcerer.onedrive.auth import auth_token
 from resourcerer.caching import is_cached
 
 
@@ -64,8 +66,8 @@ def _download_from_onedrive(
             at the source code of the webpage in the browser. Just make sure
             you don't confuse your Personal SiteId (your OneDrive instance)
             with the site that serves actual shared resources.
-        `item_path` (:obj:`str`): Path relative to the root of OneDrive.
-        `target_path` (:obj:`str`): Path to a folder where a specific
+        `item_path` (:obj:`pathlib.Path`): Path relative to the root of OneDrive.
+        `target_path` (:obj:`pathlib.Path`): Path to a folder where a specific
             file you're downloading shall be saved. If `None` (by default),
             the file will be saved to **current working directory**.
 
@@ -88,7 +90,8 @@ def _download_from_onedrive(
 def download_from_onedrive(
     item_path: Path,
     target_path: Optional[Path] = None,
-    check_cache_first: bool = True
+    check_cache_first: bool = True,
+    caching_strategy: str = "simple"
 ):
     """Downloads an item from OneDrive to a specified path
     or current working directory with pre-set connection
@@ -116,10 +119,10 @@ def download_from_onedrive(
 
     if check_cache_first:
         name = os.path.split(item_path)[-1]
-        if is_cached(name, target_path):
+        if is_cached(name, target_path, caching_strategy):
             full_target_path = os.path.join(target_path, name)
             print(f"{full_target_path} says: I'm here! No need to download me again!")
             return full_target_path
 
     return _download_from_onedrive(
-        auth_token(CLIENT_ID, TENANT_ID), SITE_ID, item_path, target_path)
+        auth_token(CLIENT_ID, TENANT_ID, SECRET), SITE_ID, item_path, target_path)

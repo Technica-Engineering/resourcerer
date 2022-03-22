@@ -1,6 +1,7 @@
 import requests
-from ..utils import (try_from_response, SITE_ID, CLIENT_ID,
-                     TENANT_ID, auth_token, response_content_to_dict, upload_file)
+from ..utils import (try_from_response, response_content_to_dict, upload_file)
+from resourcerer.onedrive.auth import auth_token
+from resourcerer.onedrive.env import SITE_ID, CLIENT_ID, TENANT_ID, SECRET
 
 # "@odata.type" => "microsoft.graph.driveItemUploadableProperties",
 #                         "@microsoft.graph.conflictBehavior" => "rename",
@@ -30,4 +31,4 @@ def _send_to_onedrive(token, site_id, item_path, target_path):
 
 def send_to_onedrive(item_path, target_path):
     return _send_to_onedrive(
-        auth_token(CLIENT_ID, TENANT_ID), SITE_ID, item_path, target_path)
+        auth_token(CLIENT_ID, TENANT_ID, SECRET), SITE_ID, item_path, target_path)

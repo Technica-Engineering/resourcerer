@@ -2,11 +2,16 @@ import os
 import json
 import requests
 import warnings
+from logging import getLogger
+from resourcerer.log import add_handlers
+
+log = getLogger(__name__)
+add_handlers(log)
 
 SECRET = os.environ.get("MSGRAPH_API_KEY")
 CLIENT_ID = os.environ.get("MSGRAPH_CLIENT_ID")
 TENANT_ID = os.environ.get("MSGRAPH_TENANT_ID")
-SITE_ID = os.environ.get("MSGRAPH_SITE_ID") 
+SITE_ID = os.environ.get("MSGRAPH_SITE_ID")
 
 
 if not CLIENT_ID:
@@ -31,7 +36,7 @@ def try_from_response(resp_dict, dict_key, error_msg):
         val = resp_dict[dict_key]
         return val
     except KeyError:
-        print(resp_dict)
+        log.error(resp_dict)
         raise KeyError(error_msg)
 
 
@@ -118,8 +123,8 @@ def upload_file(name, url):
             headers['Content-Length'] = str(content_size)
             headers['Content-Range'] = f'bytes {index}-{offset-1}/{content_size}'
             r = requests.put(url, data=chunk, headers=headers)
-            # print(r.json())
+            # log.info(r.json())
             r.raise_for_status()
-            print(f"Uploading {filename} bytes: {index}-{offset-1}, response: {r.status_code}")
+            log.info(f"Uploading {filename} bytes: {index}-{offset-1}, response: {r.status_code}")
             index = offset
     return name

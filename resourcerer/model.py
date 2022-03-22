@@ -6,14 +6,29 @@ from enum import Enum, auto
 from collections import defaultdict
 
 
+class UnknownCachingStrategy(Exception):
+    """Raised when an unknown caching strategy is used"""
+    pass
+
+
 class CachingStrategy(Enum):
     """Algorithm switch for the caching of downloaded
     resources.
-    
+
     - `SIMPLE` -> if a file with the same name exists in the target
                   folder, don't re-download
     """
     SIMPLE = auto()
+
+    @classmethod
+    def from_str(cls, str_ipt: str) -> CachingStrategy:
+        lookup_map = dict(
+            simple=cls.SIMPLE
+        )
+        try:
+            return CachingStrategy(lookup_map[str_ipt.lower()])
+        except KeyError:
+            raise UnknownCachingStrategy(f"Used {str_ipt}, available {list(lookup_map.keys())}")
 
 
 @dataclass
@@ -40,15 +55,15 @@ class ResourcesYamlObj:
 
     @classmethod
     def from_dict(cls, dct: Dict[str, Any]) -> ResourcesYamlObj:
-        ddct = defaultdict(default_factory=None)
+        ddct = defaultdict(lambda: None)
         # turn all keys to lowercase
         lowercase_key_dct = {k.lower(): v for k, v in dct.items()}
         # shove it into defaultdict:
         ddct.update(lowercase_key_dct)
         return ResourcesYamlObj(
-            ddct["download"] or [],
-            ddct["upload"] or [],
-            ddct["root_source_dir"] or Path("."),
-            ddct["target_dir"] or Path("."),
-            ddct["caching_strategy"] or CachingStrategy.SIMPLE
+            [Path(i) for i in ddct["download"] or []],
+            [Path(i) for i in ddct["upload"] or []],
+            Path(ddct["root_source_dir"] or "."),
+            Path(ddct["target_dir"] or "."),
+            CachingStrategy(ddct["caching_strategy"] or CachingStrategy.SIMPLE.value)
         )

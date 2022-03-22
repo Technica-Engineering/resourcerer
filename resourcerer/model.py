@@ -1,7 +1,9 @@
-from dataclasses import dataclass
-from typing import List
+from __future__ import annotations
+from dataclasses import dataclass, asdict
+from typing import Any, Dict, List
 from pathlib import Path
 from enum import Enum, auto
+from collections import defaultdict
 
 
 class CachingStrategy(Enum):
@@ -22,7 +24,7 @@ class CliArgs:
     pass
 
 
-@dataclass
+@dataclass()
 class ResourcesYamlObj:
     """Represents the YAML file used to configure the tool
     at runtime.
@@ -32,3 +34,21 @@ class ResourcesYamlObj:
     root_source_dir: Path
     target_dir: Path
     caching_strategy: CachingStrategy = CachingStrategy.SIMPLE
+
+    def __dict__(self):
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, dct: Dict[str, Any]) -> ResourcesYamlObj:
+        ddct = defaultdict(default_factory=None)
+        # turn all keys to lowercase
+        lowercase_key_dct = {k.lower(): v for k, v in dct.items()}
+        # shove it into defaultdict:
+        ddct.update(lowercase_key_dct)
+        return ResourcesYamlObj(
+            ddct["download"] or [],
+            ddct["upload"] or [],
+            ddct["root_source_dir"] or Path("."),
+            ddct["target_dir"] or Path("."),
+            ddct["caching_strategy"] or CachingStrategy.SIMPLE
+        )

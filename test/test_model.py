@@ -18,7 +18,7 @@ class TestModel(unittest.TestCase):
     def test_yaml_obj_parsing_default(self):
         actual = ResourcesYamlObj.from_dict(self.yaml_dct_empty)
         expected = ResourcesYamlObj(
-            [], [], Path(""), Path(""), "simple"
+            [], [], "generic", Path(""), Path(""), "simple"
         )
         self.assertEqual(actual, expected)
 
@@ -27,6 +27,7 @@ class TestModel(unittest.TestCase):
         expected = ResourcesYamlObj(
             [Path("lol.txt")],
             [Path("rofl.txt")],
+            "generic",
             Path("blah"),
             Path("blah")
         )

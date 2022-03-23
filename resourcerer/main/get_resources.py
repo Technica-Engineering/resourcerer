@@ -1,5 +1,6 @@
 from ..onedrive.get import download_from_onedrive
 from ..parse_yaml import get_yaml_obj
+from resourcerer.defaults import DEFAULT_FILE
 import os
 import argparse
 
@@ -14,15 +15,12 @@ def close_resources(resources):
     return run
 
 
-def main(default_file="resources.yaml"):
+def main():
     parser = argparse.ArgumentParser(description='Test automation wrapper')
     parser.add_argument('-f', '--file', type=str, help='Path to .kalash.yaml')
     args = parser.parse_args()
 
-    if args.file:
-        file = args.file
-    else:
-        file = default_file
+    file = args.file or DEFAULT_FILE
 
     resources = get_yaml_obj(file)
 

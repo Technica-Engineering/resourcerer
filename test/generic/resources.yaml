@@ -1,8 +1,9 @@
-test_resources:
+download:
   - testDownload.txt
 
-uploadables:
+upload:
   - '*.txt'
 
-source_folder: 'res/resourcerer_unit_tests'
-target_folder: '.'
+source: 'onedrive'
+root_source_dir: 'res/resourcerer_unit_tests'
+target_dir: '.'
